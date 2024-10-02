@@ -1,3 +1,4 @@
+import 'package:assignment/core/logic/bloc/home_bloc/home_bloc.dart';
 import 'package:assignment/core/logic/bloc/post_bloc/post_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,6 +33,9 @@ class MyApp extends StatelessWidget {
         BlocProvider<PostBloc>(
           create: (context) => PostBloc(), // Provide the PostBloc here
         ),
+        BlocProvider<HomeBloc>(
+          create: (context) => HomeBloc(), // Provide the PostBloc here
+        ),
         // Add other BlocProviders here if needed
       ],
       child: MaterialApp(
@@ -41,6 +45,7 @@ class MyApp extends StatelessWidget {
           '/': (context) => const LoginScreen(),
           '/home': (context) => HomeScreen(),
           'search': (context) => SearchScreen(),
+
           // Add more routes here as needed
         },
       ),

@@ -17,6 +17,7 @@ class BottomNavBar extends StatelessWidget {
       height: 55, // Custom height for the Bottom Navigation Bar
       child: BottomNavigationBar(
         currentIndex: selectedIndex,
+        backgroundColor: appColor.primarycolor,
         onTap: onItemTapped,
         selectedFontSize: 0, // Hide text label size to make bar smaller
         unselectedFontSize: 0, // Hide text label size to make bar smaller
