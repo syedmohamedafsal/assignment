@@ -1,5 +1,8 @@
 import 'package:assignment/core/logic/bloc/home_bloc/home_bloc.dart';
 import 'package:assignment/core/logic/bloc/post_bloc/post_bloc.dart';
+import 'package:assignment/core/logic/bloc/profile_bloc/profile_bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:assignment/view/login/login.dart';
@@ -36,6 +39,11 @@ class MyApp extends StatelessWidget {
         BlocProvider<HomeBloc>(
           create: (context) => HomeBloc(), // Provide the PostBloc here
         ),
+        BlocProvider(
+          create: (context) =>
+              ProfileBloc(storage: FirebaseStorage.instance, firestore: FirebaseFirestore.instance),
+        ),
+
         // Add other BlocProviders here if needed
       ],
       child: MaterialApp(

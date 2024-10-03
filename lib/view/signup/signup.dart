@@ -166,7 +166,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     user.uid,
                                     _fullNameController.text,
                                     _emailController.text,
-                                    'default_profile_image_url.png', // Replace with your logic to get the profile image URL
+                                    'default_profile_image_url.png',
+                                    'intrest'
                                   );
                                 }
 

@@ -28,6 +28,11 @@ class AppTextStyle {
     fontSize: 20,
     fontWeight: FontWeight.w400,
   );
+  TextStyle f20w500black = TextStyle(
+    color: appColor.textcolor,
+    fontSize: 20,
+    fontWeight: FontWeight.w500,
+  );
   TextStyle f25w500black = TextStyle(
     color: appColor.textcolor,
     fontSize: 25,

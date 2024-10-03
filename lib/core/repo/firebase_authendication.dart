@@ -33,11 +33,12 @@ class FirebaseAuthService {
   }
 
   Future<void> saveUserDetails(String userId, String fullName, String email,
-      String profileImageUrl) async {
+      String profileImageUrl,String intrest) async {
     await _firestore.collection('signup').doc(userId).set({
       'fullName': fullName,
       'email': email,
       'profileImageUrl': profileImageUrl,
+      'intrest':intrest,
     });
   }
 

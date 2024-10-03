@@ -1,6 +1,7 @@
 import 'package:assignment/constants/manager/color/color.dart';
 import 'package:assignment/constants/manager/sizedbox/sizedbox.dart';
 import 'package:assignment/core/model/post_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:assignment/core/logic/bloc/home_bloc/home_bloc.dart';
@@ -115,7 +116,16 @@ class _HomeScreenState extends State<HomeScreen> {
       case 3:
         return const ChatScreen(); // Show Chat screen
       case 4:
-        return ProfileScreen(); // Show Profile screen
+        String? userId =
+            FirebaseAuth.instance.currentUser?.uid; // Get current user ID
+        if (userId != null) {
+          return ProfileScreen(
+              userId:
+                  userId); // Pass the current user's ID to the ProfileScreen
+        } else {
+          return const Center(child: Text('User not logged in'));
+        }
+
       default:
         return const Center(child: Text('No Screen Available'));
     }
