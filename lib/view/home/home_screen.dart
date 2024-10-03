@@ -26,13 +26,18 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0; // Selected index for bottom navigation
 
   // Handle item tap
-  void _onItemTapped(int index) {
+  void _onItemTapped(int index) async {
     if (index == 2) {
-      // If Add icon is tapped, navigate to AddPostScreen separately
-      Navigator.push(
+      // If Add icon is tapped, navigate to AddPostScreen and wait for a result
+      final result = await Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const CreatePostScreen()),
       );
+
+      if (result == true) {
+        // If the user added a post (result is true), refresh the home screen
+        BlocProvider.of<HomeBloc>(context).add(FetchHomePosts());
+      }
     } else {
       // Otherwise, update the selected index to switch the screen
       setState(() {

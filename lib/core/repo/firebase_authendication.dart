@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
 import 'package:google_sign_in/google_sign_in.dart';
 
 class FirebaseAuthService {
@@ -11,7 +10,7 @@ class FirebaseAuthService {
 
   /// Sign up with email and password
   Future<User?> signUpWithEmailAndPassword(
-      String email, String password) async {
+      String email, String password, ) async {
     try {
       // Create user
       UserCredential credential = await _auth.createUserWithEmailAndPassword(
@@ -33,18 +32,18 @@ class FirebaseAuthService {
   }
 
   Future<void> saveUserDetails(String userId, String fullName, String email,
-      String profileImageUrl,String intrest) async {
+      String profileImageUrl, String interest) async {
     await _firestore.collection('signup').doc(userId).set({
       'fullName': fullName,
       'email': email,
       'profileImageUrl': profileImageUrl,
-      'intrest':intrest,
+      'interest': interest,
     });
   }
 
   /// Sign in with email and password
   Future<User?> signInWithEmailAndPassword(
-      String email, String password) async {
+      String email, String password, Function clearTextFields) async {
     try {
       // Sign in user
       UserCredential credential = await _auth.signInWithEmailAndPassword(
@@ -58,17 +57,19 @@ class FirebaseAuthService {
       return credential.user;
     } catch (e) {
       print('Error during sign in: $e');
+      clearTextFields(); // Clear text fields in case of error
       throw _handleAuthException(e);
     }
   }
 
   /// Sign in with Google
-  Future<User?> signInWithGoogle() async {
+  Future<User?> signInWithGoogle(Function clearTextFields) async {
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn();
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
 
       if (googleUser == null) {
+        clearTextFields(); // Clear text fields if user canceled sign-in
         return null; // User canceled the sign-in
       }
 
@@ -93,57 +94,10 @@ class FirebaseAuthService {
       return userCredential.user;
     } catch (e) {
       print('Error during Google sign in: $e');
+      clearTextFields(); // Clear text fields in case of error
       throw _handleAuthException(e);
     }
   }
-
-  /// Sign in with Apple
-
-
-  /// Sign in with Facebook
-  // Future<User?> signInWithFacebook() async {
-  //   try {
-  //     // Start the Facebook login process
-  //     final LoginResult result = await FacebookAuth.instance.login();
-
-  //     // Check if the login was successful
-  //     if (result.status == LoginStatus.success) {
-  //       // Retrieve the access token from the result
-  //       final accessToken = result.accessToken;
-
-  //       if (accessToken != null) {
-  //         // Use the access token for Firebase authentication
-  //         final OAuthCredential credential =
-  //             FacebookAuthProvider.credential(accessToken.token);
-
-  //         // Sign in with Firebase using the Facebook credential
-  //         UserCredential userCredential =
-  //             await _auth.signInWithCredential(credential);
-
-  //         // Fetch user data from Facebook
-  //         final userData = await FacebookAuth.instance.getUserData();
-
-  //         // Store user data in Firestore
-  //         await _saveUserData(userCredential.user, {
-  //           'displayName': userData['name'],
-  //           'email': userData['email'],
-  //           'photoURL': userData['picture']['data']['url'],
-  //         });
-
-  //         return userCredential.user;
-  //       } else {
-  //         print("Access token is null");
-  //         return null;
-  //       }
-  //     } else {
-  //       print("Facebook login failed: ${result.status}");
-  //       return null; // The user canceled the login
-  //     }
-  //   } catch (e) {
-  //     print('Error during Facebook sign in: $e');
-  //     throw _handleAuthException(e);
-  //   }
-  // }
 
   /// Store user data in Firestore
   Future<void> _saveUserData(User? user,

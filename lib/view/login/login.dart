@@ -48,6 +48,12 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  // Function to clear text fields
+  void clearTextFields() {
+    _emailController.clear(); // Clear the email text field
+    _passwordController.clear(); // Clear the password text field
+  }
+
   // Function to handle sign in
   void _signIn() async {
     // Validate inputs
@@ -67,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       User? user =
-          await _authService.signInWithEmailAndPassword(email, password);
+          await _authService.signInWithEmailAndPassword(email, password,clearTextFields);
       if (user != null) {
         await _firestore.collection('users').doc(user.uid).set({
           'email': email,
@@ -85,16 +91,20 @@ class _LoginScreenState extends State<LoginScreen> {
           SnackBar(content: Text('Logged in successfully!')),
         );
 
+        clearTextFields(); // Clear the text fields after successful login
+
         Navigator.pushReplacementNamed(context, '/home'); // Navigate to home
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Sign in failed. Please try again.')),
         );
+        clearTextFields(); // Clear the text fields after failed login
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.toString())),
       );
+      clearTextFields(); // Clear the text fields after an error
     } finally {
       setState(() {
         _isLoading = false; // Hide loading indicator
