@@ -121,28 +121,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               Text(
                 '$postCount', // Use the actual post count here
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: appTextStyle.f18w400black,
               ),
               const Text('Posts'),
             ],
           ),
-          const Column(
+          Column(
             children: [
               Text(
-                '150', // Placeholder for followers count
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                '0', // Placeholder for followers count
+                style: appTextStyle.f18w400black,
               ),
-              Text('Followers'),
+              Text(
+                'Followers',
+                style: appTextStyle.f18w400black,
+              ),
             ],
           ),
-          const Column(
+          Column(
             children: [
               Text(
-                '98', // Placeholder for following count
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                '0', // Placeholder for following count
+                style: appTextStyle.f18w400black,
               ),
-              Text('Following'),
+              Text(
+                'Following',
+                style: appTextStyle.f18w400black,
+              ),
             ],
           ),
         ],
@@ -226,7 +231,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
-
 
   // Build the icon row (Grid and Bookmark view)
   // Build the icon row (Grid and Bookmark view)

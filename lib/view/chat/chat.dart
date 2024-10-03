@@ -1,4 +1,5 @@
 // ChatScreen implementation
+import 'package:assignment/constants/manager/color/color.dart';
 import 'package:assignment/constants/manager/textstyle/textstyle.dart';
 import 'package:flutter/material.dart';
 
@@ -10,7 +11,7 @@ class ChatScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Chat',style: appTextStyle.f20w700buttontxtcolor,),
-        backgroundColor: Colors.orange,
+        backgroundColor: appColor.buttoncolor,
       ),
       body: Center(
         child: Text(

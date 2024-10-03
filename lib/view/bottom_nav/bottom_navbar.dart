@@ -1,5 +1,8 @@
 import 'package:assignment/constants/manager/color/color.dart';
+import 'package:assignment/core/logic/bloc/profile_bloc/profile_bloc.dart';
+import 'package:assignment/core/logic/bloc/profile_bloc/profile_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BottomNavBar extends StatelessWidget {
   final int selectedIndex;
@@ -21,9 +24,9 @@ class BottomNavBar extends StatelessWidget {
         onTap: onItemTapped,
         selectedFontSize: 0, // Hide text label size to make bar smaller
         unselectedFontSize: 0, // Hide text label size to make bar smaller
-        selectedIconTheme: IconThemeData(size: 30), // Slightly smaller icons
+        selectedIconTheme: const IconThemeData(size: 30), // Slightly smaller icons
         unselectedIconTheme:
-            IconThemeData(size: 30), // Same size for unselected
+            const IconThemeData(size: 30), // Same size for unselected
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(
@@ -63,18 +66,38 @@ class BottomNavBar extends StatelessWidget {
             label: '',
           ),
           BottomNavigationBarItem(
-            icon: Container(
-              height: 30,
-              width: 30,
-              decoration: BoxDecoration(
-                border: Border.all(
-                    color: appColor.buttoncolor, width: 1), // Grey border
-                borderRadius: BorderRadius.circular(50), // Rounded corners
-              ),
-              child: CircleAvatar(
-                radius: 14, // Reduce size to match other icons
-                backgroundImage: AssetImage('assets/image/google.png'),
-              ),
+            icon: BlocBuilder<ProfileBloc, ProfileState>(
+              builder: (context, state) {
+                 if (state is ProfileLoaded) {
+                  return Container(
+                    height: 30,
+                    width: 30,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: appColor.buttoncolor, width: 1),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    child: CircleAvatar(
+                      radius: 14,
+                      backgroundImage: NetworkImage(
+                          state.profileImage), // Display fetched profile image
+                    ),
+                  );
+                } else {
+                  return Container(
+                    height: 30,
+                    width: 30,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: appColor.buttoncolor, width: 1),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    child: const CircleAvatar(
+                      radius: 14,
+                      backgroundImage: AssetImage(
+                          'assets/image/google.png'), // Default profile image
+                    ),
+                  );
+                }
+              },
             ),
             label: '',
           ),

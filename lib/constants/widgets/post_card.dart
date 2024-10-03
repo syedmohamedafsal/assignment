@@ -1,9 +1,11 @@
 import 'package:assignment/constants/manager/color/color.dart';
 import 'package:assignment/constants/manager/sizedbox/sizedbox.dart';
 import 'package:assignment/constants/manager/textstyle/textstyle.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class PostWidget extends StatefulWidget {
   final String profileImage;
@@ -33,6 +35,48 @@ class _PostWidgetState extends State<PostWidget> {
   List<String> _comments = []; // List to store comments
   bool _isExpanded = false; // Track if the content is expanded
 
+  // Firestore instance
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  // Get current user ID
+  String? getCurrentUserId() {
+    return FirebaseAuth.instance.currentUser?.uid; // Get current user ID
+  }
+
+  // Function to store bookmark data in Firebase
+  Future<void> _storeBookmarkData(
+      String postImageUrl, String description) async {
+    String? userId = getCurrentUserId();
+    if (userId == null) {
+      // Handle user not logged in case
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('User not logged in')),
+      );
+      return;
+    }
+
+    // Create a document for the bookmark in the user's bookmarks collection
+    try {
+      await _firestore.collection('bookmarks').add({
+        'userId': userId,
+        'postImageUrl': postImageUrl,
+        'description': description,
+        'username': widget.name, // Include username
+        'userProfileImage': widget.profileImage, // Include profile image
+        'timestamp': FieldValue.serverTimestamp(), // To sort bookmarks later
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Bookmark saved successfully!')),
+      );
+    } catch (error) {
+      print('Error saving bookmark: $error');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error saving bookmark: $error')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -44,7 +88,8 @@ class _PostWidgetState extends State<PostWidget> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15), // Rounded corners
         ),
-        color: appColor.btnbgcolor50, // Set the background color of the card to grey
+        color: appColor
+            .btnbgcolor50, // Set the background color of the card to grey
         child: Padding(
           padding: const EdgeInsets.all(10.0), // Padding inside the card
           child: Column(
@@ -100,7 +145,8 @@ class _PostWidgetState extends State<PostWidget> {
                       _isExpanded = !_isExpanded; // Toggle the expanded state
                     });
                   },
-                  child: Text(_isExpanded ? "See Less" : "See More",style: appTextStyle.f16w400greydec,),
+                  child: Text(_isExpanded ? "See Less" : "See More",
+                      style: appTextStyle.f16w400greydec),
                 ),
               ),
               appSpace.height10,
@@ -124,9 +170,11 @@ class _PostWidgetState extends State<PostWidget> {
                   IconButton(
                     icon: Icon(
                       _isLiked
-                          ? FontAwesomeIcons.solidHeart // Solid heart when liked
+                          ? FontAwesomeIcons
+                              .solidHeart // Solid heart when liked
                           : FontAwesomeIcons.heart, // Regular heart otherwise
-                      color: _isLiked ? appColor.heartcolor : appColor.iconcolor,
+                      color:
+                          _isLiked ? appColor.heartcolor : appColor.iconcolor,
                     ),
                     onPressed: () {
                       setState(() {
@@ -167,12 +215,22 @@ class _PostWidgetState extends State<PostWidget> {
                           ? FontAwesomeIcons
                               .solidBookmark // Solid when bookmarked
                           : FontAwesomeIcons.bookmark, // Regular otherwise
-                      color: _isBookmarked ? appColor.buttoncolor : appColor.iconcolor,
+                      color: _isBookmarked
+                          ? appColor.buttoncolor
+                          : appColor.iconcolor,
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       setState(() {
                         _isBookmarked = !_isBookmarked; // Toggle bookmark icon
                       });
+                      // Store bookmark data if bookmarked
+                      if (_isBookmarked) {
+                        await _storeBookmarkData(
+                            widget.postImage, widget.content);
+                      } else {
+                        // Handle removal of the bookmark if needed (optional)
+                        // You can implement a method to remove the bookmark from Firestore if necessary.
+                      }
                     },
                   ),
                 ],
@@ -298,7 +356,6 @@ class _PostWidgetState extends State<PostWidget> {
         );
       }
     }
-
     return textSpans;
   }
 }

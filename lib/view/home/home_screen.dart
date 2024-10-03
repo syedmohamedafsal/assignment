@@ -15,9 +15,10 @@ import 'package:assignment/view/search/search.dart';
 import 'package:assignment/view/bottom_nav/bottom_navbar.dart'; // Import the BottomNavBar
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _HomeScreenState createState() => _HomeScreenState();
 }
 
@@ -84,33 +85,33 @@ class _HomeScreenState extends State<HomeScreen> {
     switch (_selectedIndex) {
       case 0:
         return BlocProvider(
-          create: (context) => HomeBloc()..add(FetchHomePosts()),
-          child: BlocBuilder<HomeBloc, HomeState>(
-            builder: (context, state) {
-              if (state is HomeLoading) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (state is HomeLoaded) {
-                return ListView.builder(
-                  itemCount: state.posts.length,
-                  itemBuilder: (context, index) {
-                    PostModel post = state.posts[index];
-                    return PostWidget(
-                      profileImage: post.userProfileImage,
-                      name: post.username,
-                      activity: post.interests.join(', '),
-                      content: post.description,
-                      postImage: post.imageUrl,
-                    );
-                  },
-                );
-              } else if (state is HomeError) {
-                return Center(child: Text('Error: ${state.error}'));
-              } else {
-                return const Center(child: Text('No posts available'));
-              }
-            },
-          ),
-        );
+            create: (context) => HomeBloc()..add(FetchHomePosts()),
+            child: BlocBuilder<HomeBloc, HomeState>(
+              builder: (context, state) {
+                if (state is HomeLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (state is HomeLoaded) {
+                  return ListView.builder(
+                    itemCount: state.posts.length,
+                    itemBuilder: (context, index) {
+                      PostModel post = state.posts[index];
+                      return PostWidget(
+                        profileImage: post.userProfileImage,
+                        name: post.username,
+                        activity: post.interests
+                            .join(', '), // Safe to join after conversion
+                        content: post.description,
+                        postImage: post.imageUrl,
+                      );
+                    },
+                  );
+                } else if (state is HomeError) {
+                  return Center(child: Text('Error: ${state.error}'));
+                } else {
+                  return const Center(child: Text('No posts available'));
+                }
+              },
+            ));
       case 1:
         return const SearchScreen(); // Show Search screen
       case 3:
@@ -125,7 +126,6 @@ class _HomeScreenState extends State<HomeScreen> {
         } else {
           return const Center(child: Text('User not logged in'));
         }
-
       default:
         return const Center(child: Text('No Screen Available'));
     }
