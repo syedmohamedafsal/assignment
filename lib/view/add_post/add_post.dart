@@ -167,7 +167,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text(state.message)),
                       );
-                      Navigator.of(context); // Close the CreatePostScreen
+                      Navigator.pop(context); // Close the CreatePostScreen
                     } else if (state is PostError) {
                       Navigator.pop(context); // Close loading indicator
                       ScaffoldMessenger.of(context).showSnackBar(
